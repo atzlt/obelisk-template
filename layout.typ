@@ -1,40 +1,10 @@
-// Paper measures
-#let width = 21cm
-#let height = width * calc.sqrt(2)
+#import "default.typ": default-settings
 
-// Paper margins
-#let t-margin = width / 9
-#let e-margin = width / 4
-#let f-margin = width / 6
-#let s-margin = width / 9
-
-// Text body measures
-#let t-width = width - s-margin - e-margin
-#let t-height = height - t-margin - f-margin
-
-// Gutter and margin sidenotes
-#let half-gutter = 0.3cm
-#let e-margin-margin = s-margin / 3
-
-// Text measures
-#let text-size = 12pt
-#let text-height = 9pt // Approximately the ascender height
-
-// Baseline grid
-#let step = 16pt
-#let step-num = calc.floor(t-height / step)
-#let f-margin = height - t-margin - step-num * step // recalculate bottom margin to align with baseline grid
-
-#let box-top-outset = text-height + half-gutter
-#let margin-w = e-margin - half-gutter - e-margin-margin
-
-// Fonts
-#let body-font = "TeX Gyre Pagella"
-#let math-font = "TeX Gyre Pagella Math"
-#let sans-font = "Switzer"
-#let mono-font = "IBM Plex Mono"
-
+// A baseline-aligned block.
 #let bblock(it, ..args) = context {
+  let def = default-settings.get();
+  let step = def.texts.step;
+
   set text(top-edge: "bounds", bottom-edge: "bounds")
   let height = measure({
     set text(top-edge: "bounds", bottom-edge: "bounds")
@@ -55,11 +25,18 @@
 }
 
 #let place-side(it, dx: 0pt, dy: 0pt, ..args) = context {
+  let def = default-settings.get();
+  let t-width = def.body.width;
+  let side-margin = def.side.margin;
+  let half-gutter = def.side.half-gutter;
+  let e-margin = def.margin.e;
+  let text-height = def.texts.ascender;
+
   let page-num = counter(page).get().first()
   let move = if calc.even(page-num) {
     -e-margin + dx
   } else {
-    t-width - e-margin-margin + half-gutter + dx
+    t-width - side-margin + half-gutter + dx
   }
   let flush = if calc.even(page-num) {
     right
@@ -70,7 +47,7 @@
   let boxed = box(
     width: e-margin - half-gutter,
     inset: (
-      left: half-gutter + e-margin-margin,
+      left: half-gutter + side-margin,
       right: half-gutter,
     ),
     outset: (
@@ -84,6 +61,8 @@
 }
 
 #let place-node(sym, dy: 0pt) = context {
+  let def = default-settings.get()
+  let half-gutter = def.side.half-gutter
   let page-num = counter(page).get().first()
   let width = measure(sym).width
   let dx = if calc.even(page-num) {
@@ -95,7 +74,8 @@
 }
 
 #let small(it, scale: 2 / 3, size: 0.75em) = {
-  let step = step * scale
+  let def = default-settings.get()
+  let step = def.texts.step * scale
   set par(leading: step)
   text(size, it)
 }
@@ -107,6 +87,14 @@
   it,
   color: rgb("#A63A2B"),
 ) = context {
+  let def = default-settings.get()
+  let margin-w = def.side.width
+  let sans-font = def.fonts.sans
+  let step = def.texts.step
+  let text-height = def.texts.ascender
+  let t-width = def.body.width
+  let half-gutter = def.side.half-gutter
+
   let page-num = counter(page).get().first()
   let side = block(width: margin-w, text(
     fill: color,
@@ -143,20 +131,22 @@
   )
 }
 
-#let sidenote(it) = context {
+#let sidenote(it, dy: 0pt) = context {
+  let def = default-settings.get()
   let page-num = counter(page).get().first()
   let posx = here().position().x
   sym.wj
   let dx = if calc.even(page-num) {
-    -posx + e-margin
+    -posx + def.margin.e
   } else {
-    -posx + s-margin
+    -posx + def.margin.s
   }
-  box(place-side(small(it), dx: dx))
+  box(place-side(small(it), dx: dx, dy: dy))
   h(0pt, weak: true)
 }
 
 #let blank-page(..args) = {
+  let mono-font = default-settings.get().fonts.mono
   set page(
     background: {
       v(2fr)

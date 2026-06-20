@@ -48,7 +48,7 @@
   it
 }
 
-// 4. The updated unified environment generator
+// Make a theorem environment.
 #let make-environment(full-name, short-name, accent-color) = {
   return (..args) => {
     let pos = args.pos()

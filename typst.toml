@@ -4,9 +4,9 @@ version = "0.1.0"
 entrypoint = "lib.typ"
 authors = ["atzlt"]
 license = "MIT"
-description = "A note template inspired by Bauhaus aesthetics."
+description = "A high-precision, Bauhaus-inspired Typst template. Features a strict baseline grid, built-in theorem environments, and an asymmetric print-ready ledger."
 
 [template]
-path = "."
+path = "templates"
 entrypoint = "main.typ"
 thumbnail = "thumbnail.png"

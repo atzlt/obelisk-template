@@ -1,4 +1,4 @@
-#import "lib.typ": *
+#import "../lib.typ": *
 
 #show: init
 
@@ -18,7 +18,7 @@ Math blocks are also automatically aligned.
 
 === Third Level Header
 
-The template includes several theorem environments by default. Theorems can have titles and referenced.
+The template includes several theorem environments by default. #sidenote[inline sidenotes can be added] Theorems can have titles and referenced.
 
 #theorem[mean inequality][
   One of the mean inequalities is $n/(sum_(i=1)^n 1/x_i)<=root(n, product_(i=1)^n x_i).$
