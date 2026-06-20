@@ -1,0 +1,12 @@
+[package]
+name = "obelisk-template"
+version = "0.1.0"
+entrypoint = "lib.typ"
+authors = ["atzlt"]
+license = "MIT"
+description = "A note template inspired by Bauhaus aesthetics."
+
+[template]
+path = "."
+entrypoint = "main.typ"
+thumbnail = "thumbnail.png"
