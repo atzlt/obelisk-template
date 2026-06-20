@@ -1,10 +1,10 @@
 [package]
-name = "obelisk-template"
+name = "obelisk"
 version = "0.1.0"
 entrypoint = "lib.typ"
 authors = ["atzlt"]
 license = "MIT"
-description = "A high-precision, Bauhaus-inspired Typst template. Features a strict baseline grid, built-in theorem environments, and an asymmetric print-ready ledger."
+description = "A high-precision, print-ready, Bauhaus-inspired note-taking template."
 
 [template]
 path = "templates"
