@@ -1,4 +1,4 @@
-#import "../lib.typ": *
+#import "@preview/obelisk:0.2.0": *
 
 #show: init
 
@@ -21,7 +21,7 @@ Math blocks are also automatically aligned.
 The template includes several theorem environments by default. #sidenote[inline sidenotes can be added] Theorems can have titles and referenced.
 
 #theorem[mean inequality][
-  One of the mean inequalities is $n/(sum_(i=1)^n 1/x_i)<=root(n, product_(i=1)^n x_i).$ #lorem(50)
+  One of the mean inequalities is $n/(sum_(i=1)^n 1/x_i)<=root(n, product_(i=1)^n x_i).$
 ]<thm:mean-ineq>
 
 Theorems can be referenced by numbering (@thm:mean-ineq) or by title (@thm:mean-ineq[!]).
