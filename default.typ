@@ -44,6 +44,7 @@
   side,
   texts,
   fonts,
+  deco,
 ) = {
   let paper = or-default(paper, width: width, height: height);
   let margin = or-default(margin, t: t-margin, f: f-margin, e: e-margin, s: s-margin);
@@ -55,6 +56,7 @@
   let side = or-default(side, half-gutter: half-gutter, margin: e-margin-margin, width: 0pt);
   side.width = margin.e - side.half-gutter - side.margin;
   let fonts = or-default(fonts, body: body-font, math: math-font, sans: sans-font, mono: mono-font);
+  let deco = or-default(deco, line-number: true);
   return (
     paper: paper,
     body: body,
@@ -62,6 +64,7 @@
     side: side,
     texts: texts,
     fonts: fonts,
+    deco: deco
   )
 }
 

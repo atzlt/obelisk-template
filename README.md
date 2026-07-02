@@ -107,3 +107,11 @@ For font replacements, _we recommend_:
 
 * For the sans font: use heavy, geometric, or unextended modern grotesques.
 * For the mono font: use high-legibility coding typefaces.
+
+### 3. Decoration Configuration
+
+```typst
+deco: (line-number)
+```
+
+* **`line-number`**: show line number or not. Default `true`.

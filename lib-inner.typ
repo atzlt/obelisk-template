@@ -27,6 +27,7 @@
     sans: sans-font,
     mono: mono-font,
   ),
+  deco: (line-number: true),
 ) = {
   let default = or-default-settings(
     paper,
@@ -34,6 +35,7 @@
     side,
     texts,
     fonts,
+    deco,
   )
   default-settings.update(_ => default)
   let (paper, margin, side, body, fonts, texts) = default
@@ -61,42 +63,34 @@
           stroke: 0.75pt + luma(180),
         ),
       )
-      // place(
-      //   top + left,
-      //   dx: margin.e,
-      //   dy: t-margin,
-      //   grid(
-      //     columns: (t-width,),
-      //     stroke: (bottom: 0.5pt + gray),
-      //     ..(block(width: 100%, height: step),) * 42
-      //   ),
-      // )
-      let dx = if calc.even(page-num) {
-        paper.width - margin.s + side.half-gutter
-      } else {
-        margin.s - side.half-gutter - 3pt
-      }
-      let rot = if calc.even(page-num) {
-        90deg
-      } else {
-        -90deg
-      }
-      set text(
-        font: fonts.mono,
-        features: ("tnum",),
-        size: 0.66em,
-        fill: luma(210),
-      )
-      for i in range(texts.step-num) {
-        place(
-          dx: dx,
-          dy: margin.t
-            + texts.step * (i + 1)
-            - texts.ascender / 4,
-          rotate(rot, [#(
-            "0123456789ABCDEF".at(calc.rem-euclid(i, 16))
-          )]),
+      if deco.line-number {
+        let dx = if calc.even(page-num) {
+          paper.width - margin.s + side.half-gutter
+        } else {
+          margin.s - side.half-gutter - 3pt
+        }
+        let rot = if calc.even(page-num) {
+          90deg
+        } else {
+          -90deg
+        }
+        set text(
+          font: fonts.mono,
+          features: ("tnum",),
+          size: 0.66em,
+          fill: luma(210),
         )
+        for i in range(texts.step-num) {
+          place(
+            dx: dx,
+            dy: margin.t
+              + texts.step * (i + 1)
+              - texts.ascender / 4,
+            rotate(rot, [#(
+              "0123456789ABCDEF".at(calc.rem-euclid(i, 16))
+            )]),
+          )
+        }
       }
     },
     footer: context {
