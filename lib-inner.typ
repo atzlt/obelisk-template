@@ -63,6 +63,16 @@
           stroke: 0.75pt + luma(180),
         ),
       )
+      // place(
+      //   top + left,
+      //   dx: margin.e,
+      //   dy: t-margin,
+      //   grid(
+      //     columns: (t-width,),
+      //     stroke: (bottom: 0.5pt + gray),
+      //     ..(block(width: 100%, height: step),) * 42
+      //   ),
+      // )
       if deco.line-number {
         let dx = if calc.even(page-num) {
           paper.width - margin.s + side.half-gutter
@@ -92,6 +102,7 @@
           )
         }
       }
+      init-sblock()
     },
     footer: context {
       let page-num = here().page()

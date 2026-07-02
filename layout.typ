@@ -2,8 +2,8 @@
 
 // A baseline-aligned block.
 #let bblock(it, ..args) = context {
-  let def = default-settings.get();
-  let step = def.texts.step;
+  let def = default-settings.get()
+  let step = def.texts.step
 
   set text(top-edge: "bounds", bottom-edge: "bounds")
   let height = measure({
@@ -25,12 +25,12 @@
 }
 
 #let place-side(it, dx: 0pt, dy: 0pt, ..args) = context {
-  let def = default-settings.get();
-  let t-width = def.body.width;
-  let side-margin = def.side.margin;
-  let half-gutter = def.side.half-gutter;
-  let e-margin = def.margin.e;
-  let text-height = def.texts.ascender;
+  let def = default-settings.get()
+  let t-width = def.body.width
+  let side-margin = def.side.margin
+  let half-gutter = def.side.half-gutter
+  let e-margin = def.margin.e
+  let text-height = def.texts.ascender
 
   let page-num = here().page()
   let move = if calc.even(page-num) {
@@ -80,6 +80,136 @@
   text(size, it)
 }
 
+// automatic stroke side block.
+#let init-sblock() = context {
+  let def = default-settings.get()
+  let width = def.paper.width
+  let height = def.paper.height
+  let e-margin = def.margin.e
+  let t-margin = def.margin.t
+  let f-margin = def.margin.f
+  let step = def.texts.step
+  let ascender = def.texts.ascender
+
+  let page-num = counter(page).get().first()
+  let is-odd = calc.odd(page-num)
+
+  // Get the total number of sblocks in the document
+  let total-blocks = counter("__obelisk_sblock-id")
+    .final()
+    .first()
+
+  for id in range(1, total-blocks + 1) {
+    let start-elements = query(label(
+      "__obelisk_sblock_start-" + str(id),
+    ))
+    let end-elements = query(label(
+      "__obelisk_sblock_end-" + str(id),
+    ))
+
+    if start-elements.len() > 0 and end-elements.len() > 0 {
+      let start-el = start-elements.first()
+      let start-pos = start-el.location().position()
+      let end-pos = end-elements
+        .first()
+        .location()
+        .position()
+
+      // If the block exists on the current page...
+      if (
+        start-pos.page <= page-num
+          and end-pos.page >= page-num
+      ) {
+        // Extract the unique custom style dictionary from the metadata
+        let config = start-el.value
+        let stroke-style = config.at(
+          "stroke",
+          default: 1pt + black,
+        )
+        let offset = config.at("offset", default: 0.2cm)
+        let outset = config.at("outset", default: (
+          left: 0pt,
+          right: 0pt,
+          top: 0pt,
+          bottom: 0pt,
+        ))
+
+        let x-pos = if is-odd {
+          width - e-margin + offset
+        } else {
+          e-margin - offset
+        }
+        let y-start = (
+          if start-pos.page == page-num {
+            start-pos.y
+          } else {
+            t-margin + step
+          }
+            - outset.top
+        )
+        let y-end = (
+          if end-pos.page == page-num {
+            end-pos.y - step * 2
+          } else {
+            height - f-margin
+          }
+            + outset.bottom
+        )
+
+        // Render the custom "stroke"
+        place(
+          top + left,
+          dx: x-pos,
+          dy: y-start,
+          line(
+            start: (0pt, 0pt),
+            end: (0pt, y-end - y-start),
+            stroke: stroke-style,
+          ),
+        )
+      }
+    }
+  }
+}
+
+#let sblock(
+  stroke: 1.5pt + black,
+  offset: 0.2cm,
+  body,
+  outset: (
+    left: 0pt,
+    right: 0pt,
+    top: 0pt,
+    bottom: 0pt,
+  ),
+  ..args,
+) = {
+  counter("__obelisk_sblock-id").step()
+
+  context {
+    let id = counter("__obelisk_sblock-id").get().first()
+
+    [
+      #metadata((
+        stroke: stroke,
+        offset: offset,
+        outset: outset,
+      ))
+      #label("__obelisk_sblock_start-" + str(id))
+    ]
+    block(
+      width: 100%,
+      breakable: true,
+      body,
+      outset: outset,
+    )
+    [
+      #metadata(none)
+      #label("__obelisk_sblock_end-" + str(id))
+    ]
+  }
+}
+
 #let theorem-render(
   env,
   name,
@@ -103,25 +233,18 @@
   ))
   let s-height = measure(side).height
   let bottom-out = step - text-height
-  let body-stroke = if calc.even(page-num) {
-    (
-      left: color + 3pt,
-    )
-  } else {
-    (
-      right: color + 3pt,
-    )
-  }
+  let body-stroke = color + 3pt
   let body = block(
     [#place-side(side) #it],
     width: t-width,
-    breakable: false,
+    breakable: true,
   )
   let b-height = measure(body).height
-  block(
+  sblock(
     body,
     height: calc.max(b-height, s-height),
     stroke: body-stroke,
+    offset: half-gutter,
     outset: (
       left: half-gutter,
       right: half-gutter,
