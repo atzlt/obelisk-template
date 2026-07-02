@@ -192,20 +192,26 @@
       set text(top-edge: "bounds", bottom-edge: "bounds")
       it
     }).height
-    let g = (
-      (
-        calc.ceil(
-          (h - texts.step * 2 + texts.ascender)
-            / texts.step,
-        )
+    let ht = measure({
+      set text(top-edge: "bounds", bottom-edge: "baseline")
+      it
+    }).height
+    let hb = h - ht
+    let gt = (
+      calc.max(calc.ceil((ht - step) / step), 0) * step
+    )
+    let gb = (
+      calc.max(
+        calc.ceil((hb - step * 2 + text-height) / step),
+        0,
       )
-        * texts.step
+        * step
     )
     box(
-      it,
-      height: g,
-      outset: (top: texts.step),
-      // stroke: 0.5pt,
+      box(align(bottom, it)),
+      height: gt + gb,
+      outset: (top: step),
+      inset: (bottom: gb),
     )
   }
 
