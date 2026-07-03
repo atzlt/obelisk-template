@@ -69,12 +69,10 @@ Obelisk exposes its architectural engine through a centralized configuration dic
 ### 1. Layout Configuration
 
 ```typst
-(
-  paper: (width, height),
-  margin: (s, e, t, f),
-  side: (half-gutter, margin),
-  texts: (size, ascender, step),
-)
+paper: (width, height),
+margin: (s, e, t, f),
+side: (half-gutter, margin),
+texts: (size, ascender, step),
 ```
 
 * **`paper`**: Maps the absolute dimensions of the physical canvas.
@@ -112,6 +110,13 @@ For font replacements, _we recommend_:
 
 ```typst
 deco: (line-number)
+headers: (h2: (sym, dy, size), h3: (sym, dy, size))
 ```
 
-* **`line-number`**: show line number or not. Default `true`.
+* **`deco`**: configures decorations.
+  * `line-number`: toggle show line number or not. Default `true`.
+
+* **`headers`**: configures H2 and H3 headers.
+  * `sym`: the symbol to place on the vertical line.
+  * `dy`: for some large symbols the symbol will be a bit off the horizontal line. Nudge this parameter to bring it back. Default: `0pt`.
+  * `size`: the size factor of the headings. Default: `2` for H2, `1.5` for H3.
