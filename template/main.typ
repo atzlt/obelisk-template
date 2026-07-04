@@ -1,4 +1,4 @@
-#import "../lib.typ": *
+#import "@preview/obelisk:0.2.0": *
 
 #show: init
 
