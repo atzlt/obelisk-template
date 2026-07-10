@@ -10,7 +10,7 @@
 
 == Second Level Header
 
-All texts are by default aligned to a baseline grid.
+All texts, math blocks, lists and enums are by default aligned to a baseline grid.
 
 $ integral_0^(+oo) "e"^(-x^2) dif x=sqrt(pi)/2 $
 

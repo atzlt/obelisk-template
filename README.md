@@ -24,7 +24,7 @@ A high-precision Typst document template engineered for mathematical monographs,
 
 3. **Intentional Page Breaks (`#blank-page`):** When preparing documents for double-sided publication, forcing a section to start on an odd page can leave an empty facing page. The `blank-page` function inserts a clean break and prints an authoritative, technical layout marker. By default, all top level headings break to an odd page using `#black-page`.
 
-4. **Customizable:** Customize page sizes and margins, baseline step sizes, fonts, and more. Obelisk comes out of the box with a carefully designed default configuration, allowing you to tweak the underlying structural metrics without breaking the core grid alignment arithmetic. _Customization is still in early stage; more options are coming in the future. See below for a guide to customization._
+4. **Customizable:** Customize page sizes and margins, baseline step sizes, fonts, and more. Obelisk comes out of the box with a carefully designed default configuration, allowing you to tweak the underlying structural metrics without breaking the core grid alignment arithmetic.
 
 ---
 
@@ -110,12 +110,13 @@ For font replacements, _we recommend_:
 ### 3. Decoration Configuration
 
 ```typst
-deco: (line-number)
+deco: (line-number, adjust-inline-math)
 headers: (h2: (sym, dy, size), h3: (sym, dy, size))
 ```
 
 * **`deco`**: configures decorations.
   * `line-number`: toggle show line number or not. Default `true`.
+  * `adjust-inline-math`: whether the template should automatically adjust the inline maths. Default `true`.
 
 * **`headers`**: configures H2 and H3 headers.
   * `sym`: the symbol to place on the vertical line.
@@ -125,6 +126,8 @@ headers: (h2: (sym, dy, size), h3: (sym, dy, size))
 ---
 
 ## Known Issues
+
+*Due to complications of inline maths, the template can sometimes fail to handle them correctly. If you want to disable automatic adjustments and are fine with texts not aligning with the baseline grid, you can turn it off; see Customization Guide, 3. Decoration Configuration, `deco` options.*
 
 1. Inline math equations are aligned using a box to adjust its height. However, once it is wrapped inside a box, it becomes unbreakable, so inline long equations may fail to break lines. Also, it may break some packages that rely on the layout of the equation, like `fletcher`. Currently the workaround is that if there is no need to adjust its height, then don't wrap it in a box. This should work most of the time; for extra tall equations, manual adjusting might be needed.
 

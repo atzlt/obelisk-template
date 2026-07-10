@@ -36,9 +36,10 @@
   size: text-size,
   ascender: text-height,
   step: step,
+  descender: 0pt,
 )
 #let def-side = (
-  half-gutter: half-gutter,
+  half-gutter: half-gutter, 
   margin: e-margin-margin,
 )
 
@@ -67,7 +68,10 @@
   ),
 )
 
-#let def-deco = (line-number: true)
+#let def-deco = (
+  line-number: true,
+  adjust-inline-math: true,
+)
 
 #let rec-or-default(user, defaults) = {
   if user == none { return defaults }
@@ -136,7 +140,7 @@
     height: paper.height - margin.t - margin.f,
   )
   texts.step-num = calc.floor(body.height / texts.step)
-  texts.descender = 0pt
+  // texts.descender = 0pt
   margin.f = (
     paper.height - margin.t - texts.step-num * texts.step
   )

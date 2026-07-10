@@ -1,15 +1,19 @@
 #import "layout.typ": *
 #import "headers.typ": *
 #import "default.typ": (
-  def-deco, def-fonts, def-headers, def-margin, def-paper,
-  def-side, def-texts, default-settings,
-  or-default-settings,
+  def-deco, def-fonts, def-headers, def-margin, def-paper, def-side, def-texts, default-settings, or-default-settings,
 )
 #import "theorem.typ": *
 
 #import "@preview/hydra:0.6.3": anchor, hydra
 
 #let hydra = hydra.with(use-last: true)
+
+#let ceil-half(n) = if n <= 0 {
+  0
+} else {
+  calc.ceil(n + 0.5) - 0.5
+}
 
 #let init(
   it,
@@ -111,9 +115,7 @@
         for i in range(texts.step-num) {
           place(
             dx: dx,
-            dy: margin.t
-              + texts.step * (i + 1)
-              - texts.ascender / 4,
+            dy: margin.t + texts.step * (i + 1) - texts.ascender / 4,
             rotate(rot, [#(
               "0123456789ABCDEF".at(calc.rem-euclid(i, 16))
             )]),
@@ -213,37 +215,36 @@
   })
 
   show math.equation.where(block: false): it => context {
-    let (
-      height: h,
-      ascender: ht,
-      descender: hb,
-    ) = true-metrics(it)
-    let gt = (
-      calc.max(calc.ceil((ht - texts.step + texts.descender) / texts.step), 0)
-        * texts.step
-    )
-    let gb = (
-      calc.max(
-        calc.ceil(
-          (hb - texts.step + texts.ascender) / texts.step,
-        ),
-        0,
-      )
-        * texts.step
-    )
-
-    // FIXME: if we wrap the equation in a box, it becomes unbreakable. The box may also break some diagram packages like fletcher.
-    // This is a temporary fix that should work most of the time: when there is no adjustment needed, don't wrap the equation.
-    if gt + gb == 0pt {
+    if not deco.adjust-inline-math {
       it
     } else {
-      box(
-        // height: gt + gb,
-        inset: (top: gt - ht, bottom: gb - hb),
-        // stroke: blue,
-        text(top-edge: "bounds", bottom-edge: "bounds", it),
-        // outset: (top: texts.step),
+      let (
+        height: h,
+        ascender: ht,
+        descender: hb,
+      ) = true-metrics(it)
+      let gt = (
+        ceil-half((ht - texts.step + texts.descender) / texts.step) * texts.step
       )
+      let gb = (
+        ceil-half((hb - texts.step + texts.ascender) / texts.step) * texts.step
+      )
+
+      // FIXME: if we wrap the equation in a box, it becomes unbreakable. The box may also break some diagram packages like fletcher.
+      // This is a temporary fix that should work most of the time: when there is no adjustment needed, don't wrap the equation.
+      if gt + gb == 0pt {
+        it
+      } else {
+        gt = calc.max(gt, 0.5 * texts.step)
+        gb = calc.max(gb, 0.5 * texts.step)
+        box(
+          // height: gt + gb,
+          inset: (top: gt - ht, bottom: gb - hb),
+          // stroke: blue,
+          text(top-edge: "bounds", bottom-edge: "bounds", it),
+          // outset: (top: texts.step),
+        )
+      }
     }
   }
 
