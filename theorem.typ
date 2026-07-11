@@ -154,6 +154,6 @@
     width: 100%,
     breakable: true,
   )[
-    _Proof#if title != none { [ #title] }._ #body #h(1fr) #sym.square
+    _#if title != none { [#title] } else { [Proof] }._ #body #h(1fr) #sym.square
   ]
 }
