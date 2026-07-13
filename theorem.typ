@@ -135,7 +135,7 @@
   rgb("#854d0e"),
 )
 
-#let proof(..args) = {
+#let proof(..args) = context {
   let pos = args.pos()
   let title = none
   let body = none
@@ -150,8 +150,19 @@
       "Proof environment expect exactly 1 or 2 positional arguments.",
     )
   }
-  block(
+  let def = default-settings.get()
+  let ascender = def.texts.ascender
+  let half-gutter = def.side.half-gutter
+  sblock(
     width: 100%,
+    offset: half-gutter,
+    outset: (
+      left: half-gutter,
+      right: half-gutter,
+      top: ascender,
+      bottom: 0pt,
+    ),
+    stroke: 0.8pt + luma(240),
     breakable: true,
   )[
     _#if title != none { [#title] } else { [Proof] }._ #body #h(1fr) #sym.square
