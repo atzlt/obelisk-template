@@ -1,6 +1,6 @@
-#import "@preview/obelisk:0.2.0": *
+#import "../lib.typ": *
 
-#show: init
+#show: init.with(headings: (thm: (base: 1)))
 
 = Obelisk Template
 

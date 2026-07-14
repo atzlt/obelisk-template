@@ -1,7 +1,7 @@
 #import "layout.typ": *
-#import "headers.typ": *
+#import "heading.typ": *
 #import "default.typ": (
-  def-deco, def-fonts, def-headers, def-margin, def-paper, def-side, def-texts, default-settings, or-default-settings,
+  def-deco, def-fonts, def-heading, def-margin, def-paper, def-side, def-texts, default-settings, or-default-settings,
 )
 #import "theorem.typ": *
 
@@ -23,7 +23,7 @@
   texts: def-texts,
   fonts: def-fonts,
   deco: def-deco,
-  headers: def-headers,
+  headings: def-heading,
 ) = {
   let default = or-default-settings(
     paper,
@@ -32,7 +32,7 @@
     texts,
     fonts,
     deco,
-    headers,
+    headings,
   )
   default-settings.update(_ => default)
   let (
@@ -43,7 +43,7 @@
     fonts,
     texts,
     deco,
-    headers,
+    heading: headings,
   ) = default
   let paper-margin = if paper.two-sided {
     (
@@ -248,9 +248,9 @@
     }
   }
 
-  show: show-headers
+  show: show-heading
 
-  show: init-theorem
+  show: init-theorem.with(base-level: headings.thm.base)
 
   it
 }

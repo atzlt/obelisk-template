@@ -66,13 +66,13 @@
 
 #let contents-icon = "<?xml version=\"1.0\" encoding=\"utf-8\"?><svg width=\"800px\" height=\"800px\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M4 6H20M4 12H14M4 18H9\" stroke=\"#eaeaea\" stroke-width=\"2\" stroke-linecap=\"square\"/></svg>"
 
-#let show-headers(it) = context {
+#let show-heading(it) = context {
   let (
     paper,
     margin,
     fonts,
     texts,
-    headers,
+    heading: headings,
   ) = default-settings.get()
 
   show heading: it => {
@@ -93,7 +93,7 @@
 
   show heading.where(level: 2): it => {
     let step = texts.step
-    set text(size: texts.size * headers.h2.size)
+    set text(size: texts.size * headings.h2.size)
     set block(
       above: step * 3,
       below: step * 2,
@@ -106,14 +106,14 @@
       breakable: false,
     )
     block(breakable: false)[#place-node(
-        $#headers.h2.sym$,
-        dy: headers.h2.dy,
+        $#headings.h2.sym$,
+        dy: headings.h2.dy,
       ) #h(2pt)#box(it)]
   }
 
   show heading.where(level: 3): it => {
     let step = texts.step
-    set text(texts.size * headers.h3.size)
+    set text(texts.size * headings.h3.size)
     set block(
       above: step * 3,
       below: step * 2,
@@ -126,8 +126,8 @@
       breakable: false,
     )
     block(breakable: false)[#place-node(
-        $#headers.h3.sym$,
-        dy: headers.h3.dy,
+        $#headings.h3.sym$,
+        dy: headings.h3.dy,
       ) #it]
   }
 

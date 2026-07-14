@@ -1,49 +1,41 @@
 #import "layout.typ": *
 
-#let init-theorem(it) = {
+#let thm-counter = counter("theorem")
+
+#let init-theorem(it, base-level: 1) = {
   // 1. Suppress default figure layout for theorems so we only see your custom styling
   show figure.where(kind: "theorem"): it => align(
     left,
     it.body,
   )
 
+  thm-counter.update((1,))
+
   // 2. Reset the shared theorem counter every time a top-level section (Heading 1) begins
-  show heading.where(level: 1): it => {
-    counter(figure.where(kind: "theorem")).update(0)
+  show heading: it => {
     it
+    if it.numbering != none and it.level <= base-level {
+      context {
+        let h-val = counter(heading).get()
+        // Reset the theorem level to 0, maintaining the current heading prefix
+        thm-counter.update(h-val + (1,))
+      }
+    }
   }
 
   // 3. Custom reference logic for @tag and @tag[!]
   show ref: it => {
     let el = it.element
     if (
-      el != none
-        and el.func() == figure
-        and el.kind == "theorem"
+      el != none and el.func() == figure and el.kind == "theorem"
     ) {
       let loc = el.location()
 
-      // Calculate the "x.x" numbering string
-      let h1 = counter(heading).at(loc).at(0, default: 0)
-      let thm-num = counter(figure.where(kind: "theorem"))
-        .at(loc)
-        .at(0)
-      let num-str = if h1 == 0 { str(thm-num) } else {
-        str(h1) + "." + str(thm-num)
-      }
-
       // Handle @tag[!]
-      if it.supplement == [!] {
-        if el.caption != none {
-          // Return the title as the clickable link
-          return link(loc, el.caption.body)
-        } else {
-          // Fallback if no title was provided
-          return link(loc, [#el.supplement #num-str])
-        }
+      if it.supplement == [!] and el.caption != none {
+        return link(loc, el.caption.body)
       } else {
-        // Standard @tag will now use the full-name (supplement)
-        return link(loc, [#el.supplement #num-str])
+        return link(loc, [#el.supplement #numbering("1.1.1", ..thm-counter.at(loc))])
       }
     }
     return it
@@ -61,6 +53,12 @@
     let pos = args.pos()
     let title = none
     let body = none
+
+    let num = context {
+      let base-level = default-settings.get().heading.thm.base
+      thm-counter.step(level: base-level + 1)
+      numbering("1.1.1", ..thm-counter.get())
+    }
 
     if pos.len() == 1 {
       body = pos.at(0)
@@ -80,17 +78,10 @@
       outlined: false,
     )[
       #context {
-        let loc = here()
-        let h1 = counter(heading).at(loc).at(0)
-        let thm-num = counter(figure.where(kind: "theorem"))
-          .at(loc)
-          .at(0)
-        let num-str = str(h1) + "." + str(thm-num)
-
         theorem-render(
           short-name,
           title,
-          num-str,
+          num,
           body,
           color: accent-color,
         )
@@ -165,6 +156,6 @@
     stroke: 0.8pt + luma(240),
     breakable: true,
   )[
-    _#if title != none { [#title] } else { [Proof] }._ #body #h(1fr) #sym.square
+    _#if title != none { [#title] } else { [Proof] }._ #body #h(1fr) $square$
   ]
 }

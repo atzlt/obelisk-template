@@ -55,7 +55,7 @@
   mono: mono-font,
 )
 
-#let def-headers = (
+#let def-heading = (
   h2: (
     sym: sym.circle.filled,
     dy: 0pt,
@@ -66,6 +66,10 @@
     dy: 0pt,
     size: 1.5,
   ),
+  thm: (
+    base: 1,
+    numbering: "1.1",
+  )
 )
 
 #let def-deco = (
@@ -105,7 +109,7 @@
   texts,
   fonts,
   deco,
-  headers,
+  heading,
 ) = {
   let (
     paper,
@@ -114,7 +118,7 @@
     texts,
     fonts,
     deco,
-    headers,
+    heading,
   ) = rec-or-default(
     (
       paper: paper,
@@ -123,7 +127,7 @@
       texts: texts,
       fonts: fonts,
       deco: deco,
-      headers: headers,
+      heading: heading,
     ),
     (
       paper: def-paper,
@@ -132,7 +136,7 @@
       texts: def-texts,
       fonts: def-fonts,
       deco: def-deco,
-      headers: def-headers,
+      heading: def-heading,
     ),
   )
   let body = (
@@ -154,7 +158,7 @@
     texts: texts,
     fonts: fonts,
     deco: deco,
-    headers: headers,
+    heading: heading,
   )
 }
 
